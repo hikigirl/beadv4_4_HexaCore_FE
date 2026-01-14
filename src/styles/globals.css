@@ -1,0 +1,36 @@
+:root {
+  /* Colors */
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-gray-100: #f4f4f4;
+  --color-gray-200: #ebebeb;
+  --color-gray-300: #d3d3d3;
+  --color-gray-400: #a0a0a0;
+  --color-gray-500: #777777;
+  --color-gray-900: #222222;
+
+  --color-accent: #ef6253;
+  /* RESELLO accent */
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 64px;
+
+  /* Layout */
+  --container-width: 1280px;
+  --header-height: 80px;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-black);
+  background-color: var(--color-white);
+  line-height: 1.5;
+}

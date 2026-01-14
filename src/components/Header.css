@@ -1,0 +1,42 @@
+/* Header Styles */
+.header {
+    height: var(--header-height);
+    border-bottom: 1px solid var(--color-gray-200);
+    background-color: var(--color-white);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-md);
+}
+
+.logo {
+    font-weight: 900;
+    font-size: 24px;
+    font-style: italic;
+    letter-spacing: -1px;
+}
+
+.nav {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.nav-link {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.user-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    font-size: 14px;
+}
