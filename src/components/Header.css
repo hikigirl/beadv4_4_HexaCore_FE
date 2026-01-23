@@ -126,7 +126,7 @@
     position: absolute;
     top: 45px;
     right: 0;
-    width: 320px;
+    width: 420px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
@@ -168,7 +168,7 @@
 }
 
 .notif-list {
-    max-height: 300px;
+    max-height: 500px;
     overflow-y: auto;
 }
 
@@ -179,13 +179,13 @@
     cursor: pointer;
 }
 
-.notif-item:hover {
-    background: #fdfdfd;
-}
-
 .notif-item.unread {
     background: #fff8f6;
     /* Very light peach/pink tint */
+}
+
+.notif-item:hover {
+    background: #fff1ec;
 }
 
 .notif-text {
