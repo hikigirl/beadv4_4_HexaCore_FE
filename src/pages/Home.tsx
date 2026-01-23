@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ProductCard } from '../components/ProductCard';
-import './Home.css';
-import { Search } from 'lucide-react';
+import { SearchBar } from '../components/SearchBar';
 
 // Mock Data
 const DROPPED_PRODUCTS = [
@@ -21,37 +20,36 @@ export const Home = () => {
     const [activeCategory, setActiveCategory] = useState("전체");
 
     return (
-        <div className="home-page">
+        <div className="min-h-screen bg-white font-sans">
             {/* Hero Section */}
-            <section className="hero">
-                <div className="hero-content">
-                    <h1 className="hero-title">
+            <section className="relative flex h-[600px] flex-col items-center justify-center pt-[60px] text-center bg-gradient-to-tr from-[#e8eaf6] via-[#9fa8da] to-[#5c6bc0] overflow-hidden">
+                {/* Decorative Circles */}
+                <div className="absolute -top-[100px] -left-[100px] h-[600px] w-[600px] rounded-full bg-white/10" />
+                <div className="absolute -bottom-[50px] right-[10%] h-[400px] w-[400px] rounded-full bg-white/10" />
+
+                <div className="relative z-10 w-full max-w-[800px] px-5">
+                    <h1 className="mb-2 text-5xl font-extrabold leading-tight text-white drop-shadow-md md:text-6xl">
                         한정판 거래의 새로운 기준
                     </h1>
-                    <p className="hero-subtitle">
+                    <p className="mb-12 text-xl font-medium text-white/90">
                         안전하고 투명한 입찰 시스템으로 원하는 가격에 거래하세요
                     </p>
 
-                    <div className="hero-search-container">
-                        <input
-                            type="text"
-                            className="hero-search-input"
-                            placeholder="브랜드, 상품명으로 검색"
-                        />
-                        <button className="search-btn">
-                            <Search size={20} />
-                        </button>
-                    </div>
+                    <SearchBar maxWidth="600px" />
                 </div>
             </section>
 
             {/* Category Navigation */}
-            <div className="category-nav">
-                <ul className="category-list">
+            <div className="sticky top-[70px] z-[50] border-b border-[#eee] bg-white py-4">
+                <ul className="flex justify-center gap-4 m-0 p-0 list-none">
                     {CATEGORIES.map(cat => (
-                        <li key={cat} className="category-item">
+                        <li key={cat}>
                             <button
-                                className={activeCategory === cat ? 'active' : ''}
+                                className={`rounded-[20px] border border-solid px-5 py-2 text-sm transition-all duration-200 cursor-pointer
+                                    ${activeCategory === cat
+                                        ? 'bg-white border-[#5c6bc0]/40 text-[#333] font-bold shadow-[0_2px_8px_rgba(92,107,192,0.2)] -translate-y-[0.5px]'
+                                        : 'bg-white border-gray-200 text-[#888] hover:border-gray-300 hover:text-[#333]'
+                                    }`}
                                 onClick={() => setActiveCategory(cat)}
                             >
                                 {cat}
@@ -62,12 +60,12 @@ export const Home = () => {
             </div>
 
             {/* Product Section */}
-            <section className="section-container">
-                <div className="section-header">
-                    <h3>인기 상품</h3>
-                    <span className="section-count">{DROPPED_PRODUCTS.length}개 상품</span>
+            <section className="mx-auto max-w-[1500px] px-10 py-8">
+                <div className="mb-8 flex items-center justify-between border-b border-gray-100 pb-4">
+                    <h3 className="text-2xl font-bold text-[#333]">인기 상품</h3>
+                    <span className="text-sm text-[#888]">{DROPPED_PRODUCTS.length}개 상품</span>
                 </div>
-                <div className="product-grid">
+                <div className="grid grid-cols-[repeat(auto-fill,250px)] justify-center gap-5">
                     {DROPPED_PRODUCTS.map(product => (
                         <ProductCard key={product.id} {...product} />
                     ))}
