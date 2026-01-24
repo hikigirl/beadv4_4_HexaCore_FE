@@ -12,7 +12,10 @@ export const Login = () => {
 
     const handleSocialLogin = (provider: string) => {
         // Vite Proxy를 활용하여 백엔드 OAuth2 Authorization Endpoint로 리다이렉트
-        const backendUrl = `/oauth2/authorization/${provider.toLowerCase()}`;
+        // 프로덕션 환경에서는 VITE_API_URL을 명시적으로 사용 (프론트 서버가 가로채지 않도록)
+        const rawUrl = import.meta.env.VITE_API_URL || '';
+        const baseUrl = rawUrl === '/' ? '' : (rawUrl.endsWith('/') ? rawUrl.slice(0, -1) : rawUrl);
+        const backendUrl = `${baseUrl}/oauth2/authorization/${provider.toLowerCase()}`;
         window.location.href = backendUrl;
     };
 
