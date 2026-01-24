@@ -7,6 +7,7 @@ const BASE_URL = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: BASE_URL || '/',
     timeout: 5000,
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
     },
