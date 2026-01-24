@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { SHOP_PRODUCTS } from '../data/mockData';
-import { registerSellBid, getSellNowPrice, sellNow, getBuyNowPrice } from '../api/market';
+import { getSellNowPrice, getBuyNowPrice } from '../api/market';
 import { ChevronLeft, AlertCircle } from 'lucide-react';
 
 export const SalesBiddingPage = () => {
@@ -16,7 +16,7 @@ export const SalesBiddingPage = () => {
     const [bidPrice, setBidPrice] = useState<string>('');
     const [immediatePrice, setImmediatePrice] = useState<number | null>(null);
     const [immediateBuyPrice, setImmediateBuyPrice] = useState<number | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting] = useState(false);
 
     useEffect(() => {
         if (sizeId) {

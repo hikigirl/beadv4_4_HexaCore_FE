@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { SHOP_PRODUCTS } from '../data/mockData';
-import { registerBuyBid, getBuyNowPrice, buyNow, getSellNowPrice } from '../api/market';
+import { getBuyNowPrice, getSellNowPrice } from '../api/market';
 import { ChevronLeft, AlertCircle } from 'lucide-react';
-import { loadTossPayments } from '@tosspayments/payment-sdk';
 
-const TOSS_CLIENT_KEY = 'test_ck_d46qopOB89Zv9qOnB0gL3ZmM75y0';
 
 export const PurchaseBiddingPage = () => {
     const { id } = useParams();
@@ -19,7 +17,7 @@ export const PurchaseBiddingPage = () => {
     const [bidPrice, setBidPrice] = useState<string>('');
     const [immediatePrice, setImmediatePrice] = useState<number | null>(null);
     const [immediateSellPrice, setImmediateSellPrice] = useState<number | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting] = useState(false);
 
     useEffect(() => {
         if (sizeId) {

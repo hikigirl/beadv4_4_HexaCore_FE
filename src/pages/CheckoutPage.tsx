@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { SHOP_PRODUCTS } from '../data/mockData';
 import { registerBuyBid, registerSellBid, buyNow, sellNow } from '../api/market';
-import { ChevronRight, ChevronLeft, Info, CheckCircle2, Building2 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Info, Building2 } from 'lucide-react';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
 
 const TOSS_CLIENT_KEY = 'test_ck_d46qopOB89Zv9qOnB0gL3ZmM75y0';
@@ -22,8 +22,7 @@ export const CheckoutPage = () => {
     const sizeId = product?.sizeIds?.[size || ''];
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [points, setPoints] = useState<string>('');
-    const [paymentMethod, setPaymentMethod] = useState<'card' | 'account' | 'pay'>('card');
+
 
     if (!product || !size || !sizeId) {
         return <div className="pt-32 text-center font-pretendard">주문 정보를 불러올 수 없습니다.</div>;
@@ -130,7 +129,7 @@ export const CheckoutPage = () => {
                     {!isSelling && (
                         <section className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                             <h3 className="text-base font-black text-gray-900 mb-6 font-pretendard">결제 방법</h3>
-                            <button onClick={() => setPaymentMethod('card')} className="w-full flex items-center justify-between p-4 rounded-xl border-2 border-gray-900 bg-gray-50">
+                            <button className="w-full flex items-center justify-between p-4 rounded-xl border-2 border-gray-900 bg-gray-50">
                                 <div className="flex items-center gap-3">
                                     <div className="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center"><div className="w-2 h-2 rounded-full bg-white" /></div>
                                     <span className="text-sm font-bold text-gray-900">카드 간편결제</span>

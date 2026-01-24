@@ -11,7 +11,7 @@ interface ProductCardProps {
     sizeIds?: { [size: string]: number };
 }
 
-export const ProductCard = ({ id, brand, name, price, imageUrl, sizeIds }: ProductCardProps) => {
+export const ProductCard = ({ id, brand, name, price, imageUrl }: ProductCardProps) => {
     const { toggleWishlist, wishlistIds } = useWishlistStore();
     const isLiked = wishlistIds.includes(id);
 
