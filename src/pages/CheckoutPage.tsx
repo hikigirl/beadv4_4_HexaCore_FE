@@ -149,7 +149,7 @@ export const CheckoutPage = () => {
                                 <h4 className="text-sm font-bold text-gray-900 truncate mb-0.5">{product.productInfo.name}</h4>
                                 <div className="flex justify-between items-end mt-auto">
                                     <span className="text-[10px] font-black text-gray-400 bg-gray-100 px-2 py-0.5 rounded-sm uppercase">{size} / {isBid ? '입찰' : '즉시'}</span>
-                                    <span className="text-base font-black text-gray-900">{itemPrice.toLocaleString()}원</span>
+                                    <span className="text-base font-black text-gray-900">{(itemPrice || 0).toLocaleString()}원</span>
                                 </div>
                             </div>
                         </div>
@@ -192,11 +192,11 @@ export const CheckoutPage = () => {
                     <section className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                         <h3 className="text-base font-black text-gray-900 mb-6">{isBid ? '입찰 확인' : '최종 확인'}</h3>
                         <div className="space-y-4 mb-8">
-                            <div className="flex justify-between text-sm"><span className="text-gray-400 font-medium">{isBid ? '입찰가' : (isSelling ? '즉시 판매가' : '즉시 구매가')}</span><span className="font-bold text-gray-900">{itemPrice.toLocaleString()}원</span></div>
-                            <div className="flex justify-between text-sm"><span className="text-gray-400 font-medium">{isSelling ? '판매 수수료' : '배송비'}</span><span className="font-bold text-gray-900">{isSelling ? '무료' : deliveryFee.toLocaleString() + '원'}</span></div>
+                            <div className="flex justify-between text-sm"><span className="text-gray-400 font-medium">{isBid ? '입찰가' : (isSelling ? '즉시 판매가' : '즉시 구매가')}</span><span className="font-bold text-gray-900">{(itemPrice || 0).toLocaleString()}원</span></div>
+                            <div className="flex justify-between text-sm"><span className="text-gray-400 font-medium">{isSelling ? '판매 수수료' : '배송비'}</span><span className="font-bold text-gray-900">{isSelling ? '무료' : (deliveryFee || 0).toLocaleString() + '원'}</span></div>
                             <div className="flex justify-between pt-4 border-t border-gray-50 items-end">
                                 <span className="text-base font-black text-gray-900 font-pretendard">{isSelling ? '예상 정산 금액' : (isBid ? '총 결제 금액' : '최종 결제 금액')}</span>
-                                <span className={`text-2xl font-black ${isSelling ? 'text-[#41b979]' : 'text-gray-900'}`}>{finalAmount.toLocaleString()}원</span>
+                                <span className={`text-2xl font-black ${isSelling ? 'text-[#41b979]' : 'text-gray-900'}`}>{(finalAmount || 0).toLocaleString()}원</span>
                             </div>
                         </div>
                         <button

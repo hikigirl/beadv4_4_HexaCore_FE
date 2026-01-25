@@ -2,11 +2,11 @@ importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js');
 
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_APIKEY,
-    authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_PROJECT_ID,
-    messagingSenderId: import.meta.env.VITE_MESSAGING_ID,
-    appId: import.meta.env.VITE_APP_ID
+    apiKey: "AIzaSyAQIRA5qILygBQaAuHe-0TBKMo2_8QEml0",
+    authDomain: "resello-dd003.firebaseapp.com",
+    projectId: "resello-dd003",
+    messagingSenderId: "862430777987",
+    appId: "1:862430777987:web:6516b3c6d2fea77dce81b6"
 };
 
 firebase.initializeApp(firebaseConfig);

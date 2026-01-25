@@ -262,9 +262,9 @@ export const MyPage = () => {
                                                 </div>
                                                 <div className="text-right">
                                                     <div className={`font-black ${tx.amount > 0 ? 'text-green-500' : 'text-[#333]'}`}>
-                                                        {tx.amount > 0 ? '+' : ''}{tx.amount.toLocaleString()}원
+                                                        {tx.amount > 0 ? '+' : ''}{(tx.amount || 0).toLocaleString()}원
                                                     </div>
-                                                    <div className="text-xs font-medium text-gray-400">잔액 {tx.balance.toLocaleString()}원</div>
+                                                    <div className="text-xs font-medium text-gray-400">잔액 {(tx.balance || 0).toLocaleString()}원</div>
                                                 </div>
                                             </div>
                                         ))}
@@ -299,7 +299,7 @@ export const MyPage = () => {
                                                 </div>
                                             </div>
                                             <div className="text-right flex flex-col items-end gap-2">
-                                                <div className="font-black text-lg">{item.price.toLocaleString()}원</div>
+                                                <div className="font-black text-lg">{(item.price || 0).toLocaleString()}원</div>
                                                 <span className={`px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider ${['배송 완료', '판매 완료'].includes(item.status)
                                                     ? 'bg-green-100 text-green-600'
                                                     : ['결제 완료', '검수 중'].includes(item.status)

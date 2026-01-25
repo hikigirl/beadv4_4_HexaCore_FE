@@ -48,7 +48,7 @@ export const ProductCard = ({ id, brand, name, price, imageUrl }: ProductCardPro
                     <div className="mt-auto flex flex-col font-pretendard">
                         <span className="text-[13px] text-[#888] mb-0.5">즉시 구매가</span>
                         <span className="text-[16.5px] font-bold text-[#333]">
-                            {price !== null ? `${price.toLocaleString()}원` : '입찰 문의'}
+                            {(typeof price === 'number') ? `${price.toLocaleString()}원` : '입찰 문의'}
                         </span>
                     </div>
                 </div>

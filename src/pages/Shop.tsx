@@ -142,18 +142,16 @@ export const Shop = () => {
                                 {isBrandExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                             </div>
                         </button>
-                        <ul className={`flex flex-col gap-1 list-none p-0 m-0 overflow-hidden transition-all duration-300 ${
-                            isBrandExpanded
+                        <ul className={`flex flex-col gap-1 list-none p-0 m-0 overflow-hidden transition-all duration-300 ${isBrandExpanded
                                 ? 'max-md:max-h-[500px] max-md:opacity-100 max-md:mt-2'
                                 : 'max-md:max-h-0 max-md:opacity-0'
-                        }`}>
+                            }`}>
                             <li>
                                 <button
-                                    className={`w-full py-2.5 px-4 text-left text-[0.9rem] transition-all duration-200 rounded-lg cursor-pointer font-pretendard ${
-                                        !activeBrandId
+                                    className={`w-full py-2.5 px-4 text-left text-[0.9rem] transition-all duration-200 rounded-lg cursor-pointer font-pretendard ${!activeBrandId
                                             ? 'bg-accent/10 text-accent font-bold'
                                             : 'bg-transparent text-[#555] hover:bg-gray-50 hover:text-[#333]'
-                                    }`}
+                                        }`}
                                     onClick={() => { setActiveBrandId(null); setPage(0); }}
                                 >
                                     전체 브랜드
@@ -162,11 +160,10 @@ export const Shop = () => {
                             {brands.map(brand => (
                                 <li key={brand.brandId}>
                                     <button
-                                        className={`w-full py-2.5 px-4 text-left text-[0.9rem] transition-all duration-200 rounded-lg cursor-pointer font-pretendard ${
-                                            activeBrandId === brand.brandId
+                                        className={`w-full py-2.5 px-4 text-left text-[0.9rem] transition-all duration-200 rounded-lg cursor-pointer font-pretendard ${activeBrandId === brand.brandId
                                                 ? 'bg-accent/10 text-accent font-bold'
                                                 : 'bg-transparent text-[#555] hover:bg-gray-50 hover:text-[#333]'
-                                        }`}
+                                            }`}
                                         onClick={() => { setActiveBrandId(brand.brandId); setPage(0); }}
                                     >
                                         {brand.name}
@@ -187,18 +184,16 @@ export const Shop = () => {
                                 {isCategoryExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                             </div>
                         </button>
-                        <ul className={`flex flex-col gap-1 list-none p-0 m-0 overflow-hidden transition-all duration-300 ${
-                            isCategoryExpanded
+                        <ul className={`flex flex-col gap-1 list-none p-0 m-0 overflow-hidden transition-all duration-300 ${isCategoryExpanded
                                 ? 'max-md:max-h-[500px] max-md:opacity-100 max-md:mt-2'
                                 : 'max-md:max-h-0 max-md:opacity-0'
-                        }`}>
+                            }`}>
                             <li>
                                 <button
-                                    className={`w-full py-2.5 px-4 text-left text-[0.9rem] transition-all duration-200 rounded-lg cursor-pointer font-pretendard ${
-                                        !activeCategoryId
+                                    className={`w-full py-2.5 px-4 text-left text-[0.9rem] transition-all duration-200 rounded-lg cursor-pointer font-pretendard ${!activeCategoryId
                                             ? 'bg-accent/10 text-accent font-bold'
                                             : 'bg-transparent text-[#555] hover:bg-gray-50 hover:text-[#333]'
-                                    }`}
+                                        }`}
                                     onClick={() => { setActiveCategoryId(null); setPage(0); }}
                                 >
                                     전체
@@ -207,11 +202,10 @@ export const Shop = () => {
                             {categories.map(cat => (
                                 <li key={cat.categoryId}>
                                     <button
-                                        className={`w-full py-2.5 px-4 text-left text-[0.9rem] transition-all duration-200 rounded-lg cursor-pointer font-pretendard ${
-                                            activeCategoryId === cat.categoryId
+                                        className={`w-full py-2.5 px-4 text-left text-[0.9rem] transition-all duration-200 rounded-lg cursor-pointer font-pretendard ${activeCategoryId === cat.categoryId
                                                 ? 'bg-accent/10 text-accent font-bold'
                                                 : 'bg-transparent text-[#555] hover:bg-gray-50 hover:text-[#333]'
-                                        }`}
+                                            }`}
                                         onClick={() => { setActiveCategoryId(cat.categoryId); setPage(0); }}
                                     >
                                         {cat.name}
@@ -226,8 +220,8 @@ export const Shop = () => {
                     <div className="mb-8 flex items-center justify-between border-b border-gray-100 pb-4">
                         <h3 className="text-2xl font-bold text-[#333] font-pretendard">전체 상품</h3>
                         <span className="text-sm text-[#888] font-pretendard">
-              {totalElements.toLocaleString()}개 상품
-            </span>
+                            {(totalElements || 0).toLocaleString()}개 상품
+                        </span>
                     </div>
 
                     {isLoading ? (

@@ -69,7 +69,7 @@ export const Cart = () => {
                                     <div className="text-sm font-bold text-gray-400 mb-1 lg:text-base">{item.brand}</div>
                                     <div className="text-base font-medium text-[#333] mb-2 lg:text-lg truncate">{item.name}</div>
                                     <div className="text-sm text-gray-400 mb-3 font-medium">사이즈: {item.size}</div>
-                                    <div className="text-lg font-black text-[#333] lg:text-xl">{item.price.toLocaleString()}원</div>
+                                    <div className="text-lg font-black text-[#333] lg:text-xl">{(item.price || 0).toLocaleString()}원</div>
                                 </div>
                                 <button
                                     className="absolute top-6 right-6 p-2 text-gray-300 transition-colors hover:text-red-500 hover:bg-red-50 rounded-lg"
@@ -100,11 +100,11 @@ export const Cart = () => {
                                 </div>
                                 <div className="flex justify-between text-gray-500 font-medium">
                                     <span>상품 총 금액</span>
-                                    <span className="text-[#333]">{productAmount.toLocaleString()}원</span>
+                                    <span className="text-[#333]">{(productAmount || 0).toLocaleString()}원</span>
                                 </div>
                                 <div className="flex justify-between text-gray-500 font-medium">
                                     <span>검수 수수료 (3%)</span>
-                                    <span className="text-[#333]">{commission.toLocaleString()}원</span>
+                                    <span className="text-[#333]">{(commission || 0).toLocaleString()}원</span>
                                 </div>
                                 <div className="flex justify-between text-gray-500 font-medium">
                                     <span>배송비</span>
