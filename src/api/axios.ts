@@ -1,11 +1,10 @@
 import axios, { type AxiosInstance, type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 
-// 기본 백엔드 API URL 설정 (환경변수 또는 하드코딩)
-const rawBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-const BASE_URL = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
+// 기본 백엔드 API URL 설정
+const BASE_URL = import.meta.env.VITE_API_URL || '/';
 
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: BASE_URL || '/',
+    baseURL: BASE_URL,
     timeout: 5000,
     withCredentials: true,
     headers: {
@@ -66,6 +65,19 @@ axiosInstance.interceptors.response.use(
                 window.location.href = '/login';
 
                 return Promise.reject(refreshError);
+            }
+        } else if (error.response) {
+            // 401 외의 서버 에러 (500, 404 등) 처리
+            const status = error.response.status;
+            const message = (error.response.data as any)?.message || '서버와 통신 중 오류가 발생했습니다.';
+
+            // 403(권한 없음) 등 특정 처리가 더 필요할 수 있으나, 일단 통합 에러 페이지로 유도
+            if (status >= 400 && status !== 401) {
+                const params = new URLSearchParams({
+                    status: status.toString(),
+                    message: message
+                });
+                window.location.href = `/error?${params.toString()}`;
             }
         }
         return Promise.reject(error);
