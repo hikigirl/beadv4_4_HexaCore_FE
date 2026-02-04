@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { User, ShoppingBag, CreditCard, Grid, ChevronRight, Settings, LogOut, Truck, Bell, Trash2, Wallet } from 'lucide-react';
 import { updateNotificationSettings, getNotificationSettings, getUserProfile, updateUserProfile, type UserProfileResponse } from '../api/user';
 import { getPriceAlerts, deletePriceAlert, type PriceAlertResponseDto } from '../api/priceAlert';
+import { logout } from '../api/auth';
 
 /* Mock Data for Transactions */
 const TRANSACTIONS = [
@@ -76,6 +77,7 @@ export const MyPage = () => {
     const tabParam = searchParams.get('tab');
     const [activeTab, setActiveTab] = useState(tabParam || 'profile');
     const [profile, setProfile] = useState<UserProfileResponse | null>(null);
+    const [draftProfile, setDraftProfile] = useState<UserProfileResponse | null>(null);
     const [isProfileLoading, setIsProfileLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -85,6 +87,7 @@ export const MyPage = () => {
             try {
                 const data = await getUserProfile();
                 setProfile(data);
+                setDraftProfile({ ...data }); // 수정용 독립 상태 초기화
             } catch (error) {
                 console.error("Failed to fetch profile:", error);
             } finally {
@@ -92,38 +95,75 @@ export const MyPage = () => {
             }
         };
         fetchProfile();
-    }, []); // 페이지 진입 시 한 번만 로드
+    }, []);
 
     const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setProfile(prev => prev ? { ...prev, [name]: value } : null);
+        setDraftProfile(prev => prev ? { ...prev, [name]: value } : null);
     };
 
     const handleSaveProfile = async () => {
-        if (!profile) return;
+        if (!draftProfile || !profile) return;
 
-        // Validation based on backend rules
-        if (!profile.nickname || profile.nickname.length < 2 || profile.nickname.length > 20) {
-            alert("닉네임은 2~20자 사이여야 합니다.");
-            return;
+        const requestBody: any = {};
+
+        // 1. 닉네임: 2~20자, 변경된 경우에만 전송
+        const trimmedNickname = draftProfile.nickname?.trim();
+        if (trimmedNickname && trimmedNickname !== profile.nickname) {
+            if (trimmedNickname.length < 2 || trimmedNickname.length > 20) {
+                alert("닉네임은 2~20자 사이여야 합니다.");
+                return;
+            }
+            requestBody.nickname = trimmedNickname;
         }
-        if (profile.name && profile.name.length > 20) {
-            alert("이름은 20자 이내여야 합니다.");
-            return;
+
+        // 2. 이름: 2~20자, 한글/영문만, 변경된 경우에만 전송
+        const trimmedName = draftProfile.name?.trim();
+        if (trimmedName && trimmedName !== profile.name) {
+            if (trimmedName.length < 2 || trimmedName.length > 20) {
+                alert("이름은 2~20자 사이여야 합니다.");
+                return;
+            }
+            if (!/^[a-zA-Z가-힣\s]+$/.test(trimmedName)) {
+                alert("이름은 한글 또는 영문만 가능합니다.");
+                return;
+            }
+            requestBody.name = trimmedName;
         }
-        if (profile.phone && !/^01[0-9]\d{7,8}$/.test(profile.phone.replace(/-/g, ''))) {
-            alert("올바른 전화번호 형식이 아닙니다.");
+
+        // 3. 전화번호: 형식 체크, 변경된 경우에만 전송
+        const purePhone = draftProfile.phone?.replace(/-/g, '').trim();
+        const originalPurePhone = profile.phone?.replace(/-/g, '');
+        if (purePhone && purePhone !== originalPurePhone) {
+            if (!/^01[0-9]\d{7,8}$/.test(purePhone)) {
+                alert("올바른 전화번호 형식이 아닙니다.");
+                return;
+            }
+            requestBody.phone = purePhone;
+        }
+
+        // 4. 주소: 1~250자, 변경된 경우에만 전송
+        const trimmedAddress = draftProfile.address?.trim();
+        if (trimmedAddress && trimmedAddress !== profile.address) {
+            if (trimmedAddress.length < 1 || trimmedAddress.length > 250) {
+                alert("주소는 1~250자 사이여야 합니다.");
+                return;
+            }
+            requestBody.address = trimmedAddress;
+        }
+
+        if (Object.keys(requestBody).length === 0) {
+            alert("수정된 내용이 없습니다.");
             return;
         }
 
         setIsSaving(true);
         try {
-            await updateUserProfile({
-                nickname: profile.nickname,
-                name: profile.name,
-                phone: profile.phone?.replace(/-/g, ''), // 숫자만 전송
-                address: profile.address
-            });
+            await updateUserProfile(requestBody);
+            // 성공 시 저장된 프로필 상태 업데이트 (사이드바 반영)
+            const updatedData = await getUserProfile();
+            setProfile(updatedData);
+            setDraftProfile({ ...updatedData });
             alert("프로필이 성공적으로 수정되었습니다.");
         } catch (error: any) {
             console.error("Update profile failed:", error);
@@ -131,6 +171,18 @@ export const MyPage = () => {
             alert(message);
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    const handleLogout = async () => {
+        if (!window.confirm("로그아웃 하시겠습니까?")) return;
+
+        try {
+            await logout();
+            navigate('/');
+        } catch (error) {
+            console.error("Logout failed:", error);
+            alert("로그아웃 중 오류가 발생했습니다.");
         }
     };
 
@@ -174,12 +226,6 @@ export const MyPage = () => {
                                         <span className="text-xs font-bold text-accent hover:underline cursor-pointer">상세내역</span>
                                     </div>
                                     <div className="text-xl font-black text-[#333] mb-4 mt-3">1,500,000원</div>
-                                    <button
-                                        className="w-full bg-[#f8f9fa] text-[#333] py-2.5 rounded-xl font-bold text-sm transition-colors hover:bg-gray-100"
-                                        onClick={() => handleTabChange('deposit')}
-                                    >
-                                        충전하기
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -239,7 +285,10 @@ export const MyPage = () => {
                                 <Settings size={18} />
                                 <span>설정</span>
                             </button>
-                            <button className="w-full flex items-center gap-3 px-6 py-4 text-sm font-bold text-red-400 hover:bg-red-50 transition-all">
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center gap-3 px-6 py-4 text-sm font-bold text-red-400 hover:bg-red-50 transition-all"
+                            >
                                 <LogOut size={18} />
                                 <span>로그아웃</span>
                             </button>
@@ -262,7 +311,7 @@ export const MyPage = () => {
                                             <label className="text-sm font-bold text-gray-400">이메일 주소</label>
                                             <input
                                                 type="email"
-                                                value={profile?.email || ''}
+                                                value={draftProfile?.email || ''}
                                                 disabled
                                                 className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-gray-400 cursor-not-allowed font-medium"
                                             />
@@ -273,7 +322,7 @@ export const MyPage = () => {
                                             <input
                                                 type="text"
                                                 name="nickname"
-                                                value={profile?.nickname || ''}
+                                                value={draftProfile?.nickname || ''}
                                                 onChange={handleProfileChange}
                                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-accent font-medium text-[#333]"
                                             />
@@ -284,7 +333,7 @@ export const MyPage = () => {
                                             <input
                                                 type="text"
                                                 name="name"
-                                                value={profile?.name || ''}
+                                                value={draftProfile?.name || ''}
                                                 onChange={handleProfileChange}
                                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-accent font-medium text-[#333]"
                                             />
@@ -295,7 +344,7 @@ export const MyPage = () => {
                                             <input
                                                 type="tel"
                                                 name="phone"
-                                                value={profile?.phone || ''}
+                                                value={draftProfile?.phone || ''}
                                                 onChange={handleProfileChange}
                                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-accent font-medium text-[#333]"
                                             />
@@ -306,7 +355,7 @@ export const MyPage = () => {
                                             <input
                                                 type="text"
                                                 name="address"
-                                                value={profile?.address || ''}
+                                                value={draftProfile?.address || ''}
                                                 onChange={handleProfileChange}
                                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-accent font-medium text-[#333]"
                                             />
@@ -335,7 +384,6 @@ export const MyPage = () => {
                                             <div className="text-4xl font-black text-accent tracking-tighter">1,500,000<span className="text-xl ml-1 font-bold text-gray-300">원</span></div>
                                         </div>
                                         <div className="flex gap-3 w-full md:w-auto">
-                                            <button className="flex-1 md:flex-none bg-accent text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg shadow-accent/20 transition-all hover:bg-[#4a58b0] hover:-translate-y-0.5">충전</button>
                                             <button className="flex-1 md:flex-none bg-white text-gray-700 border-2 border-gray-400 px-8 py-3 rounded-xl font-bold text-sm shadow-sm transition-all hover:bg-gray-50 hover:border-gray-600 hover:text-[#333]">출금</button>
                                         </div>
                                     </div>
