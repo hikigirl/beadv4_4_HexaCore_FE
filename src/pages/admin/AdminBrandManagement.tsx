@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { getBrands, createBrand, updateBrand, deleteBrand } from '../../api/product';
 import type { BrandResponse } from '../../types/product';
 import { ChevronLeft, Plus, Trash2, Edit, X, Loader2, Image as ImageIcon } from 'lucide-react';
+import { ImageUpload } from '../../components/ImageUpload';
+import { uploadImage } from '../../api/upload';
 
 // Reusable Components matching project style
 const FormCard: React.FC<{ title: string; children: React.ReactNode; className?: string }> = ({ title, children, className }) => (
@@ -37,7 +39,7 @@ const PrimaryButton: React.FC<{ children: React.ReactNode, onClick?: () => void,
 
 interface BrandFormData {
     name: string;
-    logoUrl: string;
+    logoUrl: File | string | null;
 }
 
 export const AdminBrandManagement = () => {
@@ -49,7 +51,7 @@ export const AdminBrandManagement = () => {
     const [error, setError] = useState<string | null>(null);
 
     const [selectedBrand, setSelectedBrand] = useState<BrandResponse | null>(null);
-    const [formData, setFormData] = useState<BrandFormData>({ name: '', logoUrl: '' });
+    const [formData, setFormData] = useState<BrandFormData>({ name: '', logoUrl: null });
 
     const fetchBrands = useCallback(async () => {
         setIsLoading(true);
@@ -72,10 +74,10 @@ export const AdminBrandManagement = () => {
         if (selectedBrand) {
             setFormData({
                 name: selectedBrand.name,
-                logoUrl: selectedBrand.logoUrl || ''
+                logoUrl: selectedBrand.logoUrl || null // Can be null now
             });
         } else {
-            setFormData({ name: '', logoUrl: '' });
+            setFormData({ name: '', logoUrl: null }); // Can be null now
         }
     }, [selectedBrand]);
 
@@ -92,20 +94,37 @@ export const AdminBrandManagement = () => {
         }
         setIsSubmitting(true);
         try {
+            let finalLogoUrl: string | null = null;
+            if (formData.logoUrl instanceof File) {
+                const uploadedUrls = await uploadImage([formData.logoUrl], 'BRAND');
+                if (uploadedUrls.length > 0) {
+                    finalLogoUrl = uploadedUrls[0];
+                }
+            } else if (typeof formData.logoUrl === 'string') {
+                finalLogoUrl = formData.logoUrl;
+            }
+
+            if (!finalLogoUrl) {
+                alert('로고 이미지를 업로드하거나 선택해주세요.');
+                setIsSubmitting(false);
+                return;
+            }
+
             if (selectedBrand) {
                 // Update
-                await updateBrand(selectedBrand.brandId, { name: formData.name, logoUrl: formData.logoUrl });
+                await updateBrand(selectedBrand.brandId, { name: formData.name, logoUrl: finalLogoUrl });
                 alert('브랜드가 수정되었습니다.');
             } else {
                 // Create
-                await createBrand({ name: formData.name, logoUrl: formData.logoUrl });
+                await createBrand({ name: formData.name, logoUrl: finalLogoUrl });
                 alert('브랜드가 생성되었습니다.');
             }
             setSelectedBrand(null);
-            setFormData({ name: '', logoUrl: '' });
+            setFormData({ name: '', logoUrl: null }); // Reset form
             await fetchBrands(); // Refresh list
         } catch (err) {
             alert(`오류가 발생했습니다: ${err instanceof Error ? err.message : 'Unknown error'}`);
+            console.error(err);
         } finally {
             setIsSubmitting(false);
         }
@@ -151,8 +170,13 @@ export const AdminBrandManagement = () => {
                                     <FormField label="브랜드 이름">
                                         <StyledInput name="name" value={formData.name} onChange={handleInputChange} required />
                                     </FormField>
-                                    <FormField label="로고 이미지 URL (선택)">
-                                        <StyledInput name="logoUrl" type="url" placeholder="https://example.com/logo.png" value={formData.logoUrl} onChange={handleInputChange} />
+                                    <FormField label="로고 이미지">
+                                        <ImageUpload
+                                            value={typeof formData.logoUrl === 'string' ? formData.logoUrl : undefined}
+                                            onFileSelect={(file) => setFormData(prev => ({ ...prev, logoUrl: file }))}
+                                            onRemove={() => setFormData(prev => ({ ...prev, logoUrl: null }))}
+                                            label="로고 이미지"
+                                        />
                                     </FormField>
                                     <div className="flex flex-col gap-3 pt-4">
                                        <PrimaryButton type="submit" disabled={isSubmitting}>
